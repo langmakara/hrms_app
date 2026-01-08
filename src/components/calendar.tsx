@@ -18,7 +18,7 @@ const Calendar = () => {
   const calendarDays = eachDayOfInterval({ start: startDate, end: endDate });
 
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 w-full Height max-w-md">
+    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 w-full Height max-w-md">
       {/* Header: ខែ និង ឆ្នាំ */}
       <div className="flex items-center justify-between mb-6">
         <button onClick={() => setCurrentMonth(subMonths(currentMonth, 1))} className="p-1 hover:bg-gray-100 rounded-full transition-colors">
