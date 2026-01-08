@@ -54,7 +54,13 @@
           </div>
         )
       };
-      if (pathname === "/request") return "Request";
+      if (pathname === "/request") {
+        return(
+          <div className="flex gap-6">
+            <span className="text-Size-20 mx-6">Request</span>
+          </div>
+        )
+      }
       if (pathname === "/attendance") return "Attendance";
       if (pathname === "/payroll") return "Payroll";
       return "";

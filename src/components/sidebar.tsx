@@ -47,7 +47,7 @@ const Sidebar = () => {
               href={item.href}  
               className={`flex items-center gap-3 p-3 rounded-lg transition-all
                 ${isActive 
-                  ? "bg-[#F7BD52] text-black shadow-sm" // ពណ៌ពេលនៅចំ Route ហ្នឹង
+                  ? "bg-[#24a0bf] text-white shadow-sm" // ពណ៌ពេលនៅចំ Route ហ្នឹង
                   : "text-gray-600 hover:bg-gray-100 hover:text-black"
                 }`}
             >
