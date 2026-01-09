@@ -82,13 +82,10 @@ export default function RequestPage() {
   };
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <Typography variant="h5" sx={{ mb: 3, fontWeight: 'bold', color: '#1e293b' }}>
-        Request Management
-      </Typography>
+    <div className="p-6">
 
       <Paper className="w-full rounded-xl overflow-hidden shadow-sm border border-gray-200">
-        <TableContainer sx={{ maxHeight: 600 }}>
+        <TableContainer sx={{ height: 600 }}>
           <Table stickyHeader>
             <TableHead>
               <TableRow>

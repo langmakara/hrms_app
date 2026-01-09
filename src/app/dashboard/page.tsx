@@ -94,10 +94,10 @@ export default function DashboardPage() {
 
   return (
     <div className="p-4 bg-gray-50 min-h-screen">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
         
         {/* --- LEFT SECTION (2 Cols) --- */}
-        <div className="lg:col-span-2 space-y-4">
+        <div className="lg:col-span-3 space-y-4">
           
           {/* Stats Cards Wrapper */}
           <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-row items-center justify-start overflow-x-auto gap-2">
@@ -121,7 +121,7 @@ export default function DashboardPage() {
               <button className="text-blue-500 text-sm font-semibold hover:underline">View All</button>
             </div>
             
-            <TableContainer sx={{ maxHeight: 250 }}>
+            <TableContainer sx={{ height: 250, overflowY: 'auto' }}>
               <Table stickyHeader aria-label="recent requests table">
                 <TableHead>
                   <TableRow>
@@ -177,7 +177,7 @@ export default function DashboardPage() {
         </div>
 
         {/* --- RIGHT SECTION (Calendar) --- */}
-        <div className="lg:col-span-1">
+        <div className="lg:col-span-1 max-w-lg">
           <Calendar />
         </div>
       </div>

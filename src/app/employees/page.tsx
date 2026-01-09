@@ -288,7 +288,7 @@ export default function StickyHeadTable() {
 
       {/* តារាងបង្ហាញទិន្នន័យ */}
       <div className='bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200'>
-        <TableContainer sx={{ maxHeight: 600 }}>
+        <TableContainer sx={{ height: 600 }}>
           <Table stickyHeader>
             <TableHead>
               <TableRow>
