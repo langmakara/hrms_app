@@ -1,45 +1,24 @@
-
 {
-    "attendance_list":[
-        {
-            "id": "EM001",
-            "name": "Sok Dara",
-            "status": "On time",
-            "signInTime": "9:00 AM",
-            "signOutTime": "5:00 PM",
-            "note": ""
-        },
-        {
-            "id": "EM002",
-            "name": "Sok Dara",
-            "status": "On time",
-            "signInTime": "9:00 AM",
-            "signOutTime": "5:00 PM",
-            "note": ""
-        },
-        {
-            "id": "EM003",
-            "name": "Sok Dara",
-            "status": "On time",
-            "signInTime": "9:00 AM",
-            "signOutTime": "5:00 PM",
-            "note": ""
-        },
-        {
-            "id": "EM004",
-            "name": "Sok Dara",
-            "status": "On time",
-            "signInTime": "9:00 AM",
-            "signOutTime": "5:00 PM",
-            "note": ""
-        },
-        {
-            "id": "EM005",
-            "name": "Sok Dara",
-            "status": "On time",
-            "signInTime": "9:00 AM",
-            "signOutTime": "5:00 PM",
-            "note": ""
-        }
-    ]
+  "attendance_list": [
+    { "id": "EM001", "name": "Sok Dara", "status": "On time", "signInTime": "9:00 AM", "signOutTime": "5:00 PM", "note": "" },
+    { "id": "EM002", "name": "Sok Dara", "status": "On time", "signInTime": "9:00 AM", "signOutTime": "5:00 PM", "note": "" },
+    { "id": "EM003", "name": "Sok Dara", "status": "On time", "signInTime": "9:00 AM", "signOutTime": "5:00 PM", "note": "" },
+    { "id": "EM004", "name": "Sok Dara", "status": "On time", "signInTime": "9:00 AM", "signOutTime": "5:00 PM", "note": "" },
+    { "id": "EM005", "name": "Sok Dara", "status": "On time", "signInTime": "9:00 AM", "signOutTime": "5:00 PM", "note": "" },
+    { "id": "EM006", "name": "Sok Dara", "status": "On time", "signInTime": "9:00 AM", "signOutTime": "5:00 PM", "note": "" },
+    { "id": "EM007", "name": "Sok Dara", "status": "On time", "signInTime": "9:00 AM", "signOutTime": "5:00 PM", "note": "" },
+    { "id": "EM008", "name": "Sok Dara", "status": "On time", "signInTime": "9:00 AM", "signOutTime": "5:00 PM", "note": "" },
+    { "id": "EM009", "name": "Sok Dara", "status": "On time", "signInTime": "9:00 AM", "signOutTime": "5:00 PM", "note": "" },
+    { "id": "EM010", "name": "Sok Dara", "status": "On time", "signInTime": "9:00 AM", "signOutTime": "5:00 PM", "note": "" },
+    { "id": "EM011", "name": "Sok Dara", "status": "On time", "signInTime": "9:00 AM", "signOutTime": "5:00 PM", "note": "" },
+    { "id": "EM012", "name": "Sok Dara", "status": "On time", "signInTime": "9:00 AM", "signOutTime": "5:00 PM", "note": "" },
+    { "id": "EM013", "name": "Sok Dara", "status": "On time", "signInTime": "9:00 AM", "signOutTime": "5:00 PM", "note": "" },
+    { "id": "EM014", "name": "Sok Dara", "status": "On time", "signInTime": "9:00 AM", "signOutTime": "5:00 PM", "note": "" },
+    { "id": "EM015", "name": "Sok Dara", "status": "On time", "signInTime": "9:00 AM", "signOutTime": "5:00 PM", "note": "" },
+    { "id": "EM016", "name": "Sok Dara", "status": "On time", "signInTime": "9:00 AM", "signOutTime": "5:00 PM", "note": "" },
+    { "id": "EM017", "name": "Sok Dara", "status": "On time", "signInTime": "9:00 AM", "signOutTime": "5:00 PM", "note": "" },
+    { "id": "EM018", "name": "Sok Dara", "status": "On time", "signInTime": "9:00 AM", "signOutTime": "5:00 PM", "note": "" },
+    { "id": "EM019", "name": "Sok Dara", "status": "On time", "signInTime": "9:00 AM", "signOutTime": "5:00 PM", "note": "" },
+    { "id": "EM020", "name": "Sok Dara", "status": "On time", "signInTime": "9:00 AM", "signOutTime": "5:00 PM", "note": "" }
+  ]
 }
