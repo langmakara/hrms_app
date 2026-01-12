@@ -9,7 +9,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import SearchIcon from '@mui/icons-material/Search';
 // Ensure your JSON path is correct. 
 // Assuming JSON structure is: { "attendance_list": [...] }
-import attendance_data from '../../Data/Attendance.json'; 
+import attendance_data from '../../../Data/Attendance.json'; 
 import * as XLSX from 'xlsx';
 
 const columns = [

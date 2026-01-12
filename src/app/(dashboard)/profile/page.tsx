@@ -2,9 +2,9 @@
 
 import { useState, useRef } from "react";
 import Image from "next/image";
-import UniversalModal from '../../components/UniversalModal';
-import UserForm, { UserFormData } from '../../components/Forms/userForm'; 
-import Profile from "../../assets/profile.png";
+import UniversalModal from '../../../components/UniversalModal';
+import UserForm, { UserFormData } from '../../../components/Forms/userForm'; 
+import Profile from "../../../assets/profile.png";
 import * as React from 'react';
 
 // ១. កែសម្រួល initialData ឱ្យត្រូវតាម Interface

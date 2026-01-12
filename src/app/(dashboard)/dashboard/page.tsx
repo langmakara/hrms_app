@@ -24,8 +24,8 @@ import {
 } from '@mui/material';
 
 // Assuming these are your local components
-import Calendar from '../../components/calendar';
-import StatCard from '../../components/statCard';
+import Calendar from '../../../components/calendar';
+import StatCard from '../../../components/statCard';
 
 // --- Interfaces ---
 interface Column {

@@ -16,7 +16,7 @@ import {
   Divider
 } from '@mui/material';
 
-import UniversalModal from '../../components/UniversalModal';
+import UniversalModal from '../../../components/UniversalModal';
 
 // --- Interfaces & Columns (រក្សាទុកដដែល) ---
 interface Column {

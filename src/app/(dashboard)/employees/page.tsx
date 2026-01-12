@@ -12,9 +12,9 @@ import TableRow from '@mui/material/TableRow';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import { UserPlus, Search, X } from 'lucide-react'; 
-import UniversalModal from '../../components/UniversalModal';
-import UserForm, { UserFormData } from '../../components/Forms/userForm'; // Import UserForm 
-import profil from '../../assets/profile.png'
+import UniversalModal from '../../../components/UniversalModal';
+import UserForm, { UserFormData } from '../../../components/Forms/userForm'; // Import UserForm 
+import profil from '../../../assets/profile.png'
 
 // កំណត់ Interface សម្រាប់ Data
 interface Column {
