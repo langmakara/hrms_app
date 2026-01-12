@@ -68,7 +68,13 @@
           </div>
         );
       }
-      if (pathname === "/payroll") return "Payroll";
+      if (pathname === "/payroll"){
+        return (
+          <div className="flex px-8">
+            <span className="text-Size-20">Payroll</span>
+          </div>
+        );
+      }
       return "";
     }
 

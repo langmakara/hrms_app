@@ -1,8 +1,8 @@
 {
   "attendance_list": [
-    { "id": "EM001", "name": "Sok Dara", "status": "On time", "signInTime": "9:00 AM", "signOutTime": "5:00 PM", "note": "" },
-    { "id": "EM002", "name": "Sok Dara", "status": "On time", "signInTime": "9:00 AM", "signOutTime": "5:00 PM", "note": "" },
-    { "id": "EM003", "name": "Sok Dara", "status": "On time", "signInTime": "9:00 AM", "signOutTime": "5:00 PM", "note": "" },
+    { "id": "EM001", "name": "Sok Dara", "status": "On time", "signInTime": "9:00 AM", "signOutTime": "5:00 PM", "note": "You are so good" },
+    { "id": "EM002", "name": "Sok Dara", "status": "On time", "signInTime": "9:00 AM", "signOutTime": "5:00 PM", "note": "You are so cute XD" },
+    { "id": "EM003", "name": "Sok Dara", "status": "Late", "signInTime": "9:00 AM", "signOutTime": "5:00 PM", "note": "" },
     { "id": "EM004", "name": "Sok Dara", "status": "On time", "signInTime": "9:00 AM", "signOutTime": "5:00 PM", "note": "" },
     { "id": "EM005", "name": "Sok Dara", "status": "On time", "signInTime": "9:00 AM", "signOutTime": "5:00 PM", "note": "" },
     { "id": "EM006", "name": "Sok Dara", "status": "On time", "signInTime": "9:00 AM", "signOutTime": "5:00 PM", "note": "" },
