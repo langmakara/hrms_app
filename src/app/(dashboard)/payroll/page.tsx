@@ -61,8 +61,10 @@ export default function PayrollPage() {
     XLSX.writeFile(workbook, "Payroll_Report.xlsx");
   };
 
+  const sumTotalPayment = filteredRows.reduce((sum, row) => sum + row.totalPayment, 0);
+
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 space-y-3">
       
       {/* --- Section 1: Summary Cards --- */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">

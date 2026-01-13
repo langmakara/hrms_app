@@ -82,7 +82,7 @@ export default function RequestPage() {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-3">
 
       <Paper className="w-full rounded-xl overflow-hidden shadow-sm border border-gray-200">
         <TableContainer sx={{ height: 600 }}>
@@ -145,7 +145,7 @@ export default function RequestPage() {
         title="Request Details"
       >
         {modal.data && (
-          <Box className="p-4 space-y-4">
+          <Box className="p-3 space-y-4">
             {/* បង្ហាញព័ត៌មានសង្ខេប */}
             <div className="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg border border-gray-100">
                 <div>

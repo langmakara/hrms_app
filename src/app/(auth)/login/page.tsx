@@ -49,14 +49,14 @@ export default function LoginPage() {
 
         {/* បង្ហាញសារ Login Successful រយៈពេល ២ វិនាទី */}
         {successMsg && (
-          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded mb-4 text-sm text-center font-medium animate-pulse">
+          <div className="bg-green-100  text-green-700 px-4 py-2 rounded mb-4 text-sm text-center font-medium animate-pulse">
             {successMsg}
           </div>
         )}
 
         {/* បង្ហាញ Error */}
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4 text-sm text-center">
+          <div className="bg-red-100 text-red-700 px-4 py-2 rounded mb-4 text-sm text-center">
             {error}
           </div>
         )}

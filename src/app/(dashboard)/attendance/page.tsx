@@ -68,7 +68,7 @@ export default function AttendancePage() {
   };
 
   return (
-    <div className="p-2 bg-gray-50">
+    <div className="p-2">
       <Paper className="rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div className='p-2 border-b bg-white flex justify-between items-center'>
           <h2 className="font-bold text-lg text-gray-800">Attendance Management</h2>
@@ -88,7 +88,7 @@ export default function AttendancePage() {
         </div>
 
         {/* Filter Toolbar */}
-        <div className="p-3 flex flex-wrap items-center gap-4 bg-white">
+        <div className="p-2 flex flex-wrap items-center gap-4 bg-white">
           <div className="flex items-center gap-2">
             <span className="text-sm font-medium text-gray-600">Department:</span>
             <Select size="small" defaultValue="Engineering" sx={{ minWidth: 160, borderRadius: '8px' }}>
@@ -113,7 +113,7 @@ export default function AttendancePage() {
           />
         </div>
 
-        <TableContainer sx={{ height: 580 }}>
+        <TableContainer sx={{ height: 570 }}>
           <Table stickyHeader>
             <TableHead>
               <TableRow>
