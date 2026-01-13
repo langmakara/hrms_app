@@ -1,121 +1,129 @@
-  "use client";
+"use client";
 
-  import { Bell } from "lucide-react";
-  import { usePathname } from "next/navigation";
-  import Link from "next/link";
-  import Image from "next/image";
-  import Profile from "../assets/profile.png";
-  import * as React from 'react';
-  import Box from '@mui/material/Box';
-  import Typography from '@mui/material/Typography';
-  import Modal from '@mui/material/Modal';
+import { Bell, User, Settings, LogOut } from "lucide-react"; // បន្ថែម Icon
+import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
+import ProfileImg from "../assets/profile.png";
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
+
+// កំណត់ Style ឱ្យ Modal មើលទៅស្អាតដូចក្នុងរូប
+const style = {
+  position: 'absolute',
+  top: '70px', // ឱ្យវាបង្ហាញនៅក្រោម Profile ក្នុង Header
+  right: '20px',
+  width: 250,
+  bgcolor: 'background.paper',
+  borderRadius: '12px', // ធ្វើឱ្យជ្រុងមូល
+  boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
+  p: 2,
+  outline: 'none',
+};
+
+export default function Header() {
+  const pathname = usePathname();
+  const router = useRouter();
+  const [open, setOpen] = React.useState(false);
   
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  // Function សម្រាប់ Logout
+  const handleLogout = () => {
+    // លុប Cookie ដែលយើងបានបង្កើតក្នុង middleware
+    document.cookie = "isLoggedIn=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    handleClose();
+    router.push("/login"); // បញ្ជូនទៅទំព័រ Login
   };
 
-  export default function Header() {
-    const pathname = usePathname();
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+  const getRouteName = () => {
+    const routes: Record<string, string> = {
+      "/dashboard": "Dashboard",
+      "/profile": "Profile",
+      "/employees": "Employee",
+      "/request": "Request",
+      "/attendance": "Attendance",
+      "/payroll": "Payroll"
+    };
+    
+    const name = routes[pathname] || "";
+    return name ? (
+      <div className="flex px-8">
+        <span className="text-[20px] font-medium">{name}</span>
+      </div>
+    ) : null;
+  };
 
-    const getRouteName = () => {
-      if (pathname === "/dashboard"){
-        return (
-          <div className="flex px-8">
-            <span className="text-Size-20">Dashboard</span>
-          </div>
-        );
-      };
-      if (pathname === "/profile") {
-        return (
-          <div className="flex gap-6">
-            <span className="text-Size-20 mx-6">Profile</span>
-            
-            {/* <Link href="/profile/edit">
-              <span className="text-Size-20">Edit Profile</span>
-            </Link> */}
-          </div>
-        )
-      };
-      if (pathname === "/employees") {
-        return (
-          <div className="flex gap-6">
-            <span className="text-Size-20 mx-6">Employee</span>
-          </div>
-        )
-      };
-      if (pathname === "/request") {
-        return(
-          <div className="flex gap-6">
-            <span className="text-Size-20 mx-6">Request</span>
-          </div>
-        )
-      }
-      if (pathname === "/attendance") {
-        return (
-          <div className="flex gap-6">
-            <span className="text-Size-20 mx-6">Attendance</span>
-          </div>
-        );
-      }
-      if (pathname === "/payroll"){
-        return (
-          <div className="flex px-8">
-            <span className="text-Size-20">Payroll</span>
-          </div>
-        );
-      }
-      return "";
-    }
-
-    return (
-      <header className="h-16 flex items-center justify-between border-b-3 border-gray-300">
-        {/* Link តាម Route */}
-        <div className="flex items-start">
-          {getRouteName()}
+  return (
+    <header className="h-16 flex items-center justify-between border-b-2 border-gray-200 bg-white">
+      <div className="flex items-start">
+        {getRouteName()}
+      </div>
+      
+      <div className="flex items-center gap-6 px-8">
+        {/* Notification Icon */}
+        <div className="relative cursor-pointer hover:opacity-70 transition-opacity text-gray-500">
+          <Bell size={22} />
+          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+            9+
+          </span>
         </div>
-        
-        <div className="flex items-center gap-6 px-8">
-          {/* Notification Icon */}
-          <div className="relative cursor-pointer hover:opacity-70 transition-opacity">
-            <Bell size={24} className="text-gray-600" />
-            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[12px] w-4 h-4 flex items-center justify-center rounded-full">
-              9+
-            </span>
+
+        {/* Profile Section */}
+        <div className="relative">
+          <div 
+            className="w-9 h-9 rounded-full overflow-hidden border border-gray-300 cursor-pointer hover:ring-2 hover:ring-blue-400 transition-all" 
+            onClick={handleOpen}
+          >
+            <Image src={ProfileImg} alt="Profile" width={36} height={36} className="object-cover" />
           </div>
 
-          {/* Profile Section */}
-          <div className="flex items-center gap-3 cursor-pointer">
-            <div className="w-9 h-9 rounded-full overflow-hidden border border-gray-300 " onClick={handleOpen}>
-              <Image src={Profile} alt="Profile" width={36} height={36} className="object-cover" />
-            </div>
-            <Modal
-              open={open}
-              onClose={handleClose}
-              aria-labelledby="modal-modal-title"
-              aria-describedby="modal-modal-description"
-            >
-              <Box sx={style}>
-                <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Text in a modal
-                </Typography>
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                  Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-                </Typography>
-              </Box>
-            </Modal>
-          </div>
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="profile-menu"
+            // លុប Backdrop ខ្មៅចេញ បើអ្នកចង់ឱ្យវាដូច Menu Dropdown ធម្មតា
+            slotProps={{ backdrop: { style: { backgroundColor: 'transparent' } } }} 
+          >
+            <Box sx={style}>
+              <div className="flex flex-col gap-1">
+                {/* Profile Link */}
+                <Link 
+                  href="/profile" 
+                  onClick={handleClose}
+                  className="flex items-center gap-3 p-3 hover:bg-gray-100 rounded-lg transition-colors group"
+                >
+                  <div className="bg-gray-100 p-2 rounded-full group-hover:bg-white">
+                    <User size={20} className="text-gray-700" />
+                  </div>
+                  <span className="text-gray-800 font-medium">Profile</span>
+                </Link>
+
+                {/* Setting Link */}
+                <button 
+                  className="flex items-center gap-3 p-3 hover:bg-gray-100 rounded-lg transition-colors group text-left"
+                >
+                  <div className="bg-gray-100 p-2 rounded-full group-hover:bg-white">
+                    <Settings size={20} className="text-gray-700" />
+                  </div>
+                  <span className="text-gray-800 font-medium">Setting</span>
+                </button>
+
+                {/* Logout Button - ពណ៌ក្រហមដូចក្នុងរូប */}
+                <button 
+                  onClick={handleLogout}
+                  className="mt-2 flex items-center justify-center gap-2 w-full bg-[#FF5A5A] hover:bg-red-600 text-white font-bold py-3 rounded-xl transition-all shadow-sm"
+                >
+                  <LogOut size={20} />
+                  <span>Logout</span>
+                </button>
+              </div>
+            </Box>
+          </Modal>
         </div>
-      </header>
-    );
-  }
+      </div>
+    </header>
+  );
+}

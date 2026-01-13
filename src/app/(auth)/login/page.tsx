@@ -18,22 +18,19 @@ export default function LoginPage() {
   };
 
   const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setSuccessMsg("");
-
-    if (email === EXAMPLE_USER.email && password === EXAMPLE_USER.password) {
-      setSuccessMsg("Login Successful!"); // បង្ហាញសារ
-
-      // កំណត់ឱ្យរង់ចាំ ២ វិនាទី ទើបដូរទៅទំព័រ Dashboard
-      setTimeout(() => {
-        router.push("/dashboard");
-      }, 2000);
-      
-    } else {
-      setError("Email ឬ Password មិនត្រឹមត្រូវទេ!");
-    }
-  };
+  e.preventDefault();
+  if (email === EXAMPLE_USER.email && password === EXAMPLE_USER.password) {
+    // បង្កើត Cookie ឈ្មោះ "isLoggedIn" ដើម្បីឱ្យ Middleware ឆែកមើលបាន
+    document.cookie = "isLoggedIn=true; path=/"; 
+    
+    setSuccessMsg("Login Successful!");
+    setTimeout(() => {
+      router.push("/dashboard");
+    }, 2000);
+  } else {
+    setError("Email ឬ Password មិនត្រឹមត្រូវទេ!");
+  }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
