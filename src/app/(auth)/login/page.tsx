@@ -27,7 +27,7 @@ export default function LoginPage() {
 
       if (response.data?.data?.access_token) {
         // រក្សាទុកសម្រាប់ Middleware និងការប្រើប្រាស់បន្ត
-        document.cookie = "isLoggedIn=true; path=/"; 
+        document.cookie = "isLoggedIn=true; path=/";
         localStorage.setItem("access_token", response.data.data.access_token);
 
         setSuccessMsg("Login Successful!");
@@ -36,7 +36,32 @@ export default function LoginPage() {
         }, 2000);
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || "Email ឬ Password មិនត្រឹមត្រូវ!");
+      console.error("Login error:", err);
+
+      // Handle different error scenarios
+      if (err.response) {
+        // Server responded with error status
+        const errorData = err.response?.data;
+        let errorMessage = "An error occurred. Please try again.";
+
+        // Safely extract error message as string
+        if (typeof errorData === 'string') {
+          errorMessage = errorData;
+        } else if (errorData && typeof errorData === 'object') {
+          errorMessage = errorData.message || errorData.error || `Server error: ${err.response.status}`;
+        } else {
+          errorMessage = `Server error: ${err.response.status}`;
+        }
+
+        // Ensure it's always a string
+        setError(String(errorMessage));
+      } else if (err.request) {
+        // Request made but no response received
+        setError("Cannot connect to server. Please check if the backend is running.");
+      } else {
+        // Something else happened
+        setError(err.message || "An unexpected error occurred. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -47,8 +72,8 @@ export default function LoginPage() {
       <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
         <div className="flex flex-col items-center mb-8 text-center">
           <div className="flex items-center">
-             <span className="text-4xl font-bold text-blue-500 italic">C</span>
-             <span className="text-4xl font-bold text-yellow-500">HRMS</span>
+            <span className="text-4xl font-bold text-blue-500 italic">C</span>
+            <span className="text-4xl font-bold text-yellow-500">HRMS</span>
           </div>
           <p className="text-[10px] text-blue-900 font-semibold uppercase">Human Resource Management System</p>
         </div>
