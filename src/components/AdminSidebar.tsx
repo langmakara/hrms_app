@@ -17,7 +17,7 @@ const navItems = [
     title: "Dashboard", 
     icon: LayoutDashboard, 
     id: "dashboard", 
-    href: "/dashboard" 
+    href: "/admin-dashboard" 
   },
   { 
     title: "User", 

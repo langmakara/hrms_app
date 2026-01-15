@@ -14,6 +14,21 @@ export default function LoginPage() {
   const [successMsg, setSuccessMsg] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  // Helper function to decode JWT token
+  const decodeJWT = (token: string) => {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      return JSON.parse(jsonPayload);
+    } catch (error) {
+      console.error("Error decoding JWT:", error);
+      return null;
+    }
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -25,14 +40,49 @@ export default function LoginPage() {
       const response = await api.post('/auth/login', { email, password });
       console.log(response.data);
 
-      if (response.data?.data?.access_token) {
-        // រក្សាទុកសម្រាប់ Middleware និងការប្រើប្រាស់បន្ត
+      // Handle response - backend returns { access_token: "..." }
+      const access_token = response.data?.access_token || response.data?.data?.access_token;
+
+      if (access_token) {
+        // Decode JWT to extract user payload (sub, email, roles)
+        const payload = decodeJWT(access_token);
+        console.log("Decoded JWT payload:", payload);
+
+        // Store token in cookie for axios interceptor
+        document.cookie = `access_token=${access_token}; path=/; max-age=86400`; // 24 hours
         document.cookie = "isLoggedIn=true; path=/";
-        localStorage.setItem("access_token", response.data.data.access_token);
+        localStorage.setItem("access_token", access_token);
+
+        // Store user information from JWT payload
+        if (payload) {
+          const userInfo = {
+            id: payload.sub,
+            email: payload.email,
+            roles: payload.roles || [],
+          };
+
+          localStorage.setItem("user", JSON.stringify(userInfo));
+          localStorage.setItem("userRoles", JSON.stringify(payload.roles || []));
+
+          // For backward compatibility, store primary role
+          const primaryRole = Array.isArray(payload.roles) && payload.roles.length > 0
+            ? payload.roles[0]
+            : "user";
+          localStorage.setItem("userRole", primaryRole);
+        }
 
         setSuccessMsg("Login Successful!");
+
+        // Role-based routing - redirect based on roles
         setTimeout(() => {
-          router.push("/dashboard");
+          const roles = payload?.roles || [];
+
+          // Check if user has admin role
+          if (Array.isArray(roles) && roles.includes("admin")) {
+            router.push("/admin-dashboard");
+          } else {
+            router.push("/dashboard");
+          }
         }, 2000);
       }
     } catch (err: any) {

@@ -22,7 +22,7 @@ const style = {
   outline: 'none',
 };
 
-export default function Header() {
+export default function HeaderAdminpage() {
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
@@ -40,12 +40,10 @@ export default function Header() {
 
   const getRouteName = () => {
     const routes: Record<string, string> = {
-      "/dashboard": "Dashboard",
-      "/profile": "Profile",
-      "/employees": "Employee",
-      "/request": "Request",
-      "/attendance": "Attendance",
-      "/payroll": "Payroll",
+      "/admin-dashboard": "Admin Dashboard",
+      "/user": "User",
+      "/departments": "Departments",
+      "/reports": "Reports"
     };
     
     const name = routes[pathname] || "";
@@ -89,29 +87,6 @@ export default function Header() {
           >
             <Box sx={style}>
               <div className="flex flex-col gap-1">
-                {/* Profile Link */}
-                <Link 
-                  href="/profile" 
-                  onClick={handleClose}
-                  className="flex items-center gap-3 p-3 hover:bg-gray-100 rounded-lg transition-colors group"
-                >
-                  <div className="bg-gray-100 p-2 rounded-full group-hover:bg-white">
-                    <User size={20} className="text-gray-700" />
-                  </div>
-                  <span className="text-gray-800 font-medium">Profile</span>
-                </Link>
-
-                {/* Setting Link */}
-                <button 
-                  className="flex items-center gap-3 p-3 hover:bg-gray-100 rounded-lg transition-colors group text-left"
-                >
-                  <div className="bg-gray-100 p-2 rounded-full group-hover:bg-white">
-                    <Settings size={20} className="text-gray-700" />
-                  </div>
-                  <span className="text-gray-800 font-medium">Setting</span>
-                </button>
-
-                {/* Logout Button - ពណ៌ក្រហមដូចក្នុងរូប */}
                 <button 
                   onClick={handleLogout}
                   className="mt-2 flex items-center justify-center gap-2 w-full bg-[#FF5A5A] hover:bg-red-600 text-white font-bold py-3 rounded-xl transition-all shadow-sm"
