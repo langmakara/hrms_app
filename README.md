@@ -4,7 +4,7 @@ root/
 ├── src/
 │   ├── app/               # Next.js Routing Layer (App Router)
 │   │   ├── (auth)/        # Route Group (Login/Register)
-|   |   ├── (admin)
+|   |   ├── (admin)/
 │   │   ├── (dashboard)/   # Route Group (Main App)
 │   │   ├── api/           # Route Handlers (Backend endpoints)
 │   │   ├── layout.tsx     # Global Layout
