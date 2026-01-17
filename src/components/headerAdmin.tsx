@@ -43,7 +43,7 @@ export default function HeaderAdminpage() {
       "/admin-dashboard": "Admin Dashboard",
       "/user": "User",
       "/departments": "Departments",
-      "/reports": "Reports"
+      "/reportse": "Reports"
     };
     
     const name = routes[pathname] || "";

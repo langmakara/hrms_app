@@ -2,7 +2,6 @@
 "use client";
 
 import * as React from 'react';
-import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -25,7 +24,7 @@ interface Column {
 }
 
 const columns: readonly Column[] = [
-  { id: 'id', label: 'ID', minWidth: 90 },
+  { id: 'id', label: 'Code', minWidth: 90 },
   { id: 'name', label: 'Name', minWidth: 170 },
   { id: 'gender', label: 'Gender', minWidth: 20 },
   { id: 'email', label: 'Email', minWidth: 170 },
@@ -273,7 +272,7 @@ export default function AdminUserPage() {
       <UniversalModal 
         open={modal.open} 
         onClose={() => setModal({ ...modal, open: false })}
-        title={modal.mode === 'add' ? "Add New Employee" : "Edit Employee Information"}
+        title={modal.mode === 'add' ? "Add New User" : "Edit User Information"}
       >
         <UserForm 
           mode={modal.mode}

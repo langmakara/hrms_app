@@ -35,7 +35,7 @@ const navItems = [
     title: "Reports", 
     icon: ClipboardList, // ClipboardList សមស្របសម្រាប់របាយការណ៍
     id: "reports", 
-    href: "/reports" 
+    href: "/reportse" 
   },
 ];
 

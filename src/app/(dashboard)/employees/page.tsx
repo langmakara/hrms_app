@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from 'react';
-import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -11,12 +10,14 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
-import { UserPlus, Search, X } from 'lucide-react'; 
+import { UserPlus, Search, X } from 'lucide-react';
 import UniversalModal from '../../../components/UniversalModal';
-import UserForm, { UserFormData } from '../../../components/Forms/userForm'; // Import UserForm 
-import profil from '../../../assets/profile.png'
+import UserForm from '../../../components/Forms/userForm';
 
-// កំណត់ Interface សម្រាប់ Data
+// Import Services និង Types
+import { fetchEmployees, createEmployee, updateEmployee, deleteEmployee } from '../../../service/employeeService';
+import { EmployeeDto } from '../../../dtos/employee';
+
 interface Column {
   id: 'id' | 'name' | 'gender' | 'email' | 'phone' | 'action';
   label: string;
@@ -33,194 +34,63 @@ const columns: readonly Column[] = [
   { id: 'action', label: 'Action', minWidth: 170, align: 'center' },
 ];
 
-// ទិន្នន័យគំរូ (Mock Data)
-const initialRows: UserFormData[] = [
-  { 
-    id: 'EM0001', name: 'Sok Dara', gender: 'Male', dob: '1995-10-15', 
-    email: 'sokdara@gmail.com', phone: '089 553 696', address: 'Phnom Penh', 
-    status: 'Work', dateHire: '2023-01-01', department: 'IT', position: 'Frontend', 
-    emergencyContact: '012 000 001', managerId: 'M-01', profileImage: profil 
-  },
-  { 
-    id: 'EM0002', name: 'Keo Pich', gender: 'Female', dob: '1998-05-20', 
-    email: 'pich@gmail.com', phone: '012 334 556', address: 'Kandal', 
-    status: 'Work', dateHire: '2023-02-15', department: 'HR', position: 'Manager', 
-    emergencyContact: '012 000 002', managerId: 'M-01', profileImage: profil
-  },
-  { 
-    id: 'EM0003', name: 'Chan Vanna', gender: 'Male', dob: '1992-03-12', 
-    email: 'vanna.chan@gmail.com', phone: '098 776 554', address: 'Kampong Cham', 
-    status: 'Work', dateHire: '2022-05-10', department: 'Finance', position: 'Accountant', 
-    emergencyContact: '012 000 003', managerId: 'M-02', profileImage: profil
-  },
-  { 
-    id: 'EM0004', name: 'Mesa Thida', gender: 'Female', dob: '1996-11-25', 
-    email: 'thida.mesa@gmail.com', phone: '015 223 344', address: 'Siem Reap', 
-    status: 'Work', dateHire: '2023-06-01', department: 'Marketing', position: 'Designer', 
-    emergencyContact: '012 000 004', managerId: 'M-02', profileImage: profil
-  },
-  { 
-    id: 'EM0005', name: 'Nareth Sophea', gender: 'Female', dob: '1994-08-08', 
-    email: 'sophea.n@gmail.com', phone: '011 445 566', address: 'Phnom Penh', 
-    status: 'Leave', dateHire: '2021-09-20', department: 'IT', position: 'Backend', 
-    emergencyContact: '012 000 005', managerId: 'M-01', profileImage: profil
-  },
-  { 
-    id: 'EM0006', name: 'Ratanak Vibol', gender: 'Male', dob: '1990-12-30', 
-    email: 'vibol.ratanak@gmail.com', phone: '077 889 900', address: 'Battambang', 
-    status: 'Work', dateHire: '2020-01-15', department: 'Admin', position: 'Supervisor', 
-    emergencyContact: '012 000 006', managerId: 'M-03', profileImage: profil
-  },
-  { 
-    id: 'EM0007', name: 'Kosal Sreyneath', gender: 'Female', dob: '1997-02-14', 
-    email: 'sreyneath.k@gmail.com', phone: '010 667 788', address: 'Takeo', 
-    status: 'Work', dateHire: '2023-03-10', department: 'HR', position: 'Recruiter', 
-    emergencyContact: '012 000 007', managerId: 'M-03', profileImage: profil
-  },
-  { 
-    id: 'EM0008', name: 'Bunthoeun Samat', gender: 'Male', dob: '1993-06-18', 
-    email: 'samat.b@gmail.com', phone: '012 990 011', address: 'Kampot', 
-    status: 'Resign', dateHire: '2019-11-01', department: 'IT', position: 'Network Admin', 
-    emergencyContact: '012 000 008', managerId: 'M-01', profileImage: profil
-  },
-  { 
-    id: 'EM0009', name: 'Phalla Sitha', gender: 'Male', dob: '1991-04-05', 
-    email: 'sitha.p@gmail.com', phone: '088 554 433', address: 'Phnom Penh', 
-    status: 'Work', dateHire: '2022-08-12', department: 'Finance', position: 'Auditor', 
-    emergencyContact: '012 000 009', managerId: 'M-02', profileImage: profil
-  },
-  { 
-    id: 'EM0010', name: 'Leakena Som', gender: 'Female', dob: '1999-07-22', 
-    email: 'leakena.som@gmail.com', phone: '093 221 100', address: 'Preah Sihanouk', 
-    status: 'Work', dateHire: '2024-01-05', department: 'Marketing', position: 'Content Creator', 
-    emergencyContact: '012 000 010', managerId: 'M-02', profileImage: profil
-  },
-  { 
-    id: 'EM0011', name: 'Vicheka Long', gender: 'Male', dob: '1995-11-11', 
-    email: 'vicheka.l@gmail.com', phone: '015 667 789', address: 'Phnom Penh', 
-    status: 'Work', dateHire: '2022-12-01', department: 'IT', position: 'Mobile Dev', 
-    emergencyContact: '012 000 011', managerId: 'M-01', profileImage: profil
-  },
-  { 
-    id: 'EM0012', name: 'Srey Moch', gender: 'Female', dob: '1996-09-09', 
-    email: 'sreymoch.c@gmail.com', phone: '069 334 455', address: 'Kandal', 
-    status: 'Work', dateHire: '2023-05-20', department: 'Admin', position: 'Receptionist', 
-    emergencyContact: '012 000 012', managerId: 'M-03', profileImage: profil
-  },
-  { 
-    id: 'EM0013', name: 'Visal Kong', gender: 'Male', dob: '1992-05-05', 
-    email: 'visal.k@gmail.com', phone: '092 112 233', address: 'Phnom Penh', 
-    status: 'Work', dateHire: '2021-02-14', department: 'IT', position: 'UI/UX Designer', 
-    emergencyContact: '012 000 013', managerId: 'M-01', profileImage: profil
-  },
-  { 
-    id: 'EM0014', name: 'Bopha Chann', gender: 'Female', dob: '1994-12-12', 
-    email: 'bopha.ch@gmail.com', phone: '016 778 899', address: 'Kampong Thom', 
-    status: 'Leave', dateHire: '2022-10-10', department: 'HR', position: 'Assistant', 
-    emergencyContact: '012 000 014', managerId: 'M-03', profileImage: profil
-  },
-  { 
-    id: 'EM0015', name: 'Davit Lim', gender: 'Male', dob: '1998-01-01', 
-    email: 'davit.lim@gmail.com', phone: '010 445 577', address: 'Phnom Penh', 
-    status: 'Work', dateHire: '2023-07-07', department: 'Marketing', position: 'Sales', 
-    emergencyContact: '012 000 015', managerId: 'M-02', profileImage: profil
-  },
-  { 
-    id: 'EM0016', name: 'Piseth Roeun', gender: 'Male', dob: '1993-02-28', 
-    email: 'piseth.r@gmail.com', phone: '081 223 355', address: 'Pursat', 
-    status: 'Work', dateHire: '2021-08-01', department: 'Finance', position: 'CFO', 
-    emergencyContact: '012 000 016', managerId: 'M-02', profileImage: profil
-  },
-  { 
-    id: 'EM0017', name: 'Sreylin Mao', gender: 'Female', dob: '1997-06-15', 
-    email: 'sreylin.mao@gmail.com', phone: '097 556 677', address: 'Phnom Penh', 
-    status: 'Work', dateHire: '2023-09-15', department: 'IT', position: 'QA Engineer', 
-    emergencyContact: '012 000 017', managerId: 'M-01', profileImage: profil
-  },
-  { 
-    id: 'EM0018', name: 'Sokha Meng', gender: 'Male', dob: '1991-10-10', 
-    email: 'sokha.m@gmail.com', phone: '012 334 112', address: 'Kratie', 
-    status: 'Work', dateHire: '2020-05-05', department: 'Admin', position: 'Clerk', 
-    emergencyContact: '012 000 018', managerId: 'M-03', profileImage: profil
-  },
-  { 
-    id: 'EM0019', name: 'Vatana Sim', gender: 'Male', dob: '1995-03-20', 
-    email: 'vatana.sim@gmail.com', phone: '015 889 001', address: 'Prey Veng', 
-    status: 'Work', dateHire: '2022-04-01', department: 'Marketing', position: 'Lead Sales', 
-    emergencyContact: '012 000 019', managerId: 'M-02', profileImage: profil
-  },
-  { 
-    id: 'EM0020', name: 'Nita Ros', gender: 'Female', dob: '1999-12-05', 
-    email: 'nita.ros@gmail.com', phone: '061 223 445', address: 'Phnom Penh', 
-    status: 'Work', dateHire: '2024-02-20', department: 'HR', position: 'Junior HR', 
-    emergencyContact: '012 000 020', managerId: 'M-03', profileImage: profil
-  },
-  { 
-    id: 'EM0021', name: 'Tola Hang', gender: 'Male', dob: '1994-04-14', 
-    email: 'tola.hang@gmail.com', phone: '012 554 111', address: 'Svay Rieng', 
-    status: 'Work', dateHire: '2021-12-25', department: 'Finance', position: 'Tax Consultant', 
-    emergencyContact: '012 000 021', managerId: 'M-02', profileImage: profil
-  },
-  { 
-    id: 'EM0022', name: 'Phary Vann', gender: 'Female', dob: '1996-05-30', 
-    email: 'phary.vann@gmail.com', phone: '010 332 211', address: 'Phnom Penh', 
-    status: 'Work', dateHire: '2023-11-11', department: 'IT', position: 'DevOps', 
-    emergencyContact: '012 000 022', managerId: 'M-01', profileImage: profil
-  },
-  { 
-    id: 'EM0023', name: 'Odom Phann', gender: 'Male', dob: '1990-08-15', 
-    email: 'odom.p@gmail.com', phone: '085 776 655', address: 'Stung Treng', 
-    status: 'Resign', dateHire: '2018-06-01', department: 'Admin', position: 'Logistics', 
-    emergencyContact: '012 000 023', managerId: 'M-03', profileImage: profil
-  },
-  { 
-    id: 'EM0024', name: 'Chanrea Keo', gender: 'Female', dob: '1993-01-20', 
-    email: 'chanrea.k@gmail.com', phone: '016 443 322', address: 'Phnom Penh', 
-    status: 'Work', dateHire: '2022-01-10', department: 'Marketing', position: 'SEO Specialist', 
-    emergencyContact: '012 000 024', managerId: 'M-02', profileImage: profil
-  },
-  { 
-    id: 'EM0025', name: 'Serey Bun', gender: 'Male', dob: '1992-07-07', 
-    email: 'serey.bun@gmail.com', phone: '011 229 988', address: 'Phnom Penh', 
-    status: 'Work', dateHire: '2021-03-15', department: 'IT', position: 'Fullstack Dev', 
-    emergencyContact: '012 000 025', managerId: 'M-01', profileImage: profil
-  },
-];
-
-// បញ្ជី Manager គំរូ
-const managersList = [
-  { id: 'M-01', name: 'John Doe' },
-  { id: 'M-02', name: 'Jane Smith' },
-];
-
-export default function StickyHeadTable() {
+export default function EmployeesPage() {
+  // កំណត់ Initial State ជា Array ទទេជានិច្ច ដើម្បីការពារ rows.filter is not a function
+  const [rows, setRows] = React.useState<EmployeeDto[]>([]);
+  const [loading, setLoading] = React.useState(true);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [searchTerm, setSearchTerm] = React.useState("");
-  
-  // បន្ថែម Modal State
+
   const [modal, setModal] = React.useState<{
     open: boolean;
-    mode: 'add' | 'edit' ;
-    data?: UserFormData;
+    mode: 'add' | 'edit';
+    data?: EmployeeDto;
   }>({
     open: false,
     mode: 'add',
     data: undefined,
   });
+  const [submitting, setSubmitting] = React.useState(false);
+  const [serverError, setServerError] = React.useState<string | null>(null);
+
+  // ទាញទិន្នន័យពី API
+  const loadEmployees = async () => {
+    try {
+      setLoading(true);
+      const data = await fetchEmployees();
+      setRows(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error("Failed to load employees:", error);
+      setRows([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // List of managers (derived from employees)
+  const managers = React.useMemo(() => {
+    return rows.map(emp => ({ id: emp.id, name: emp.name }));
+  }, [rows]);
+
+  React.useEffect(() => {
+    loadEmployees();
+  }, []);
 
   // Filter Logic
   const filteredRows = React.useMemo(() => {
-    return initialRows.filter((row) => {
-      const searchLower = searchTerm.toLowerCase();
+    if (!Array.isArray(rows)) return [];
+
+    const searchLower = searchTerm.toLowerCase();
+    return rows.filter((row) => {
       return (
-        row.name.toLowerCase().includes(searchLower) ||
-        row.id.toLowerCase().includes(searchLower) ||
-        row.email.toLowerCase().includes(searchLower) ||
-        row.phone.includes(searchTerm)
+        row.name?.toLowerCase().includes(searchLower) ||
+        row.id?.toString().toLowerCase().includes(searchLower) ||
+        row.email?.toLowerCase().includes(searchLower) ||
+        row.phone?.toLowerCase().includes(searchLower)
       );
     });
-  }, [searchTerm]);
+  }, [searchTerm, rows]);
 
   // Handlers
   const handleChangePage = (event: unknown, newPage: number) => setPage(newPage);
@@ -229,30 +99,60 @@ export default function StickyHeadTable() {
     setPage(0);
   };
 
-  const handleEdit = (row: UserFormData) => {
+  const handleEdit = (row: EmployeeDto) => {
     setModal({ open: true, mode: 'edit', data: row });
   };
 
-  const handleSubmit = (data: UserFormData) => {
-    console.log("Submitted Data:", data);
-    setModal({ ...modal, open: false });
-    // នៅទីនេះអ្នកអាចបន្ថែម logic ដើម្បី Update ទៅ Database ឬ State
+  const handleDelete = async (id: string) => {
+    if (window.confirm("តើអ្នកប្រាកដថាចង់លុបបុគ្គលិកនេះមែនទេ?")) {
+      try {
+        await deleteEmployee(id);
+        alert("លុបបានជោគជ័យ");
+        loadEmployees();
+      } catch (error) {
+        console.error("Delete Error:", error);
+        alert("ការលុបមិនបានសម្រេច");
+      }
+    }
+  };
+
+  const handleSubmit = async (formData: any) => {
+    setServerError(null);
+    setSubmitting(true);
+    try {
+      if (modal.mode === 'add') {
+        const { id, ...createData } = formData; // Remove id if it's there (should be auto-gen)
+        await createEmployee(createData);
+        // optional: show toast instead of alert
+        alert("បង្កើតថ្មីជោគជ័យ");
+      } else {
+        const id = formData.id || modal.data?.id;
+        if (!id) throw new Error("Missing Employee ID");
+        await updateEmployee(id, formData);
+        alert("កែប្រែជោគជ័យ");
+      }
+      setModal({ ...modal, open: false });
+      await loadEmployees();
+    } catch (error: any) {
+      // Prefer server-provided message
+      const msg = error?.response?.data?.message || error?.response?.data || error?.message || String(error);
+      console.error("Submit Error:", msg);
+      setServerError(typeof msg === 'string' ? msg : JSON.stringify(msg));
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
     <div className='p-3'>
       <div className='p-3 flex items-center justify-between w-full gap-4'>
-        
-        {/* ប៊ូតុង Add New */}
-        <button 
+        <button
           onClick={() => setModal({ open: true, mode: 'add', data: undefined })}
-          className="flex items-center gap-2 border hover:border-green-600  hover:bg-green-600 hover:text-white text-black px-4 py-2 rounded-lg transition-all"
+          className="flex items-center gap-2 border hover:border-green-600 hover:bg-green-600 hover:text-white text-black px-4 py-2 rounded-lg transition-all"
         >
-          <UserPlus size={18} />
-          Add
+          <UserPlus size={18} /> Add
         </button>
 
-        {/* ប្រអប់ Search */}
         <div className="relative w-full max-w-sm">
           <input
             type="text"
@@ -271,22 +171,22 @@ export default function StickyHeadTable() {
         </div>
       </div>
 
-      {/* ការហៅប្រើ UniversalModal និង UserForm */}
-      <UniversalModal 
-        open={modal.open} 
+      <UniversalModal
+        open={modal.open}
         onClose={() => setModal({ ...modal, open: false })}
         title={modal.mode === 'add' ? "Add New Employee" : "Edit Employee Information"}
       >
-        <UserForm 
+        <UserForm
           mode={modal.mode}
           initialData={modal.data}
-          managers={managersList}
+          managers={managers}
           onClose={() => setModal({ ...modal, open: false })}
           onSubmit={handleSubmit}
+          submitting={submitting}
+          serverError={serverError}
         />
       </UniversalModal>
 
-      {/* តារាងបង្ហាញទិន្នន័យ */}
       <div className='bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200'>
         <TableContainer sx={{ height: 600 }}>
           <Table stickyHeader>
@@ -304,23 +204,29 @@ export default function StickyHeadTable() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredRows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => (
-                  <TableRow hover key={row.id}>
-                    <TableCell>{row.id}</TableCell>
-                    <TableCell>{row.name}</TableCell>
-                    <TableCell>{row.gender}</TableCell>
-                    <TableCell>{row.email}</TableCell>
-                    <TableCell>{row.phone}</TableCell>
-                    <TableCell align="center">
-                      <Stack direction="row" spacing={1} justifyContent="center">
-                        <Button size="small" onClick={() => handleEdit(row)}>Edit</Button>
-                        <Button size="small" color="error">Delete</Button>
-                      </Stack>
-                    </TableCell>
-                  </TableRow>
-                ))}
+              {loading ? (
+                <TableRow><TableCell colSpan={6} align="center">កំពុងទាញទិន្នន័យ...</TableCell></TableRow>
+              ) : filteredRows.length === 0 ? (
+                <TableRow><TableCell colSpan={6} align="center">មិនមានទិន្នន័យត្រូវបានបង្ហាញទេ</TableCell></TableRow>
+              ) : (
+                filteredRows
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row) => (
+                    <TableRow hover key={row.id}>
+                      <TableCell>{row.id}</TableCell>
+                      <TableCell>{row.name}</TableCell>
+                      <TableCell>{row.gender}</TableCell>
+                      <TableCell>{row.email}</TableCell>
+                      <TableCell>{row.phone}</TableCell>
+                      <TableCell align="center">
+                        <Stack direction="row" spacing={1} justifyContent="center">
+                          <Button size="small" variant="outlined" onClick={() => handleEdit(row)}>Edit</Button>
+                          <Button size="small" variant="outlined" color="error" onClick={() => handleDelete(row.id)}>Delete</Button>
+                        </Stack>
+                      </TableCell>
+                    </TableRow>
+                  ))
+              )}
             </TableBody>
           </Table>
         </TableContainer>
