@@ -1,5 +1,5 @@
 
-import api from './api';
+import { apiClient } from '@/lib/api-client';
 import { EmployeeDto, CreateEmployeeDto, UpdateEmployeeDto } from '../dtos/employee';
 
 export const fetchEmployees = async (): Promise<EmployeeDto[]> => {
@@ -40,8 +40,8 @@ export const createEmployee = async (employeeData: CreateEmployeeDto): Promise<E
         // Sanitize payload: remove empty strings / undefined so backend gets a clean object
         const payload = cleanObject(employeeData as Record<string, any>);
 
-    // If profileImage looks like a data URL (base64), consider sending as FormData
-    if (typeof payload.profileImage === 'string' && payload.profileImage.startsWith('data:')) {
+        // If profileImage looks like a data URL (base64), consider sending as FormData
+        if (typeof payload.profileImage === 'string' && payload.profileImage.startsWith('data:')) {
             // Try to convert data URL to Blob and send multipart/form-data
             try {
                 const matches = payload.profileImage.match(/^data:(.+);base64,(.+)$/);
@@ -64,7 +64,7 @@ export const createEmployee = async (employeeData: CreateEmployeeDto): Promise<E
 
                     // DO NOT set Content-Type for FormData manually; let browser set the boundary
                     console.debug('[employeeService] sending multipart FormData payload', { form });
-                    const response = await api.post<EmployeeDto>('/employees', form);
+                    const response = await apiClient.post<EmployeeDto>('/employees', form);
                     return ((response.data as any).data ?? response.data) as EmployeeDto;
                 }
             } catch (innerErr) {
@@ -72,10 +72,10 @@ export const createEmployee = async (employeeData: CreateEmployeeDto): Promise<E
             }
         }
 
-    console.debug('[employeeService] sending JSON payload to /employees', payload);
-    const response = await api.post<EmployeeDto>('/employees', payload);
-    // prefer API data.wrapper if exists
-    return ((response.data as any).data ?? response.data) as EmployeeDto;
+        console.debug('[employeeService] sending JSON payload to /employees', payload);
+        const response = await apiClient.post<EmployeeDto>('/employees', payload);
+        // prefer API data.wrapper if exists
+        return ((response.data as any).data ?? response.data) as EmployeeDto;
     } catch (error: any) {
         // improved error logging to help debug 400 responses
         try {
@@ -98,7 +98,7 @@ export const createEmployee = async (employeeData: CreateEmployeeDto): Promise<E
 
 export const updateEmployee = async (id: string, employeeData: UpdateEmployeeDto): Promise<EmployeeDto> => {
     try {
-        const response = await api.put<EmployeeDto>(`/employees/${id}`, employeeData);
+        const response = await apiClient.put<EmployeeDto>(`/employees/${id}`, employeeData);
         return response.data;
     } catch (error) {
         console.error('Error updating employee:', error);
@@ -108,7 +108,7 @@ export const updateEmployee = async (id: string, employeeData: UpdateEmployeeDto
 
 export const deleteEmployee = async (id: string): Promise<void> => {
     try {
-        await api.delete(`/employees/${id}`);
+        await apiClient.delete(`/employees/${id}`);
     } catch (error) {
         console.error('Error deleting employee:', error);
         throw error;

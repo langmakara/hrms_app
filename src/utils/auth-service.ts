@@ -2,12 +2,12 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import api from "./api";
 import { createSession, deleteSession } from "@/lib/session";
+import { apiClient } from "@/lib/api-client";
 
 export async function login(email: string, password: string): Promise<boolean> {
 	try {
-		const res = await api.post<{
+		const res = await apiClient.post<{
 			success: boolean;
 			data: {
 				token: string;
@@ -54,7 +54,7 @@ export async function login(email: string, password: string): Promise<boolean> {
 
 export async function logout() {
 	try {
-		await api.post("/api/auth/logout", {});
+		await apiClient.post("/api/auth/logout", {});
 		await deleteSession();
 	} catch (error) {
 		console.log("[Logout] error: " + error);
@@ -67,8 +67,7 @@ export async function fetchAccessToken() {
 
 	try {
 		const response = await fetch(
-			`${
-				process.env.BACKEND_API_URL || "http://localhost:3001/api"
+			`${process.env.BACKEND_API_URL || "http://localhost:3001/api"
 			}/auth/refresh`,
 			{
 				method: "POST",
@@ -96,8 +95,7 @@ export async function fetchAccessToken() {
 export async function isValidToken(token: string): Promise<boolean> {
 	try {
 		const response = await fetch(
-			`${
-				process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000/api"
+			`${process.env.NEXT_PUBLIC_API_BASE_URL || process.env.API_BASE_URL || "http://localhost:3001"
 			}/api/auth/verify-token`,
 			{
 				method: "POST",

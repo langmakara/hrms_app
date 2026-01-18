@@ -12,6 +12,13 @@ const buildForwardHeaders = (request: NextRequest) => {
     // Forward cookies and authorization headers so backend sees authenticated user
     out[k] = v;
   }
+
+  // Explicitly set Authorization from auth_token cookie
+  const token = request.cookies.get('auth_token')?.value;
+  if (token && !out['authorization']) {
+    out['authorization'] = `Bearer ${token}`;
+  }
+
   return out;
 };
 

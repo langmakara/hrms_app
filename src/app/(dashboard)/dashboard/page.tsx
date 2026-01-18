@@ -1,12 +1,12 @@
 "use client";
 
 import * as React from 'react';
-import { 
-  LucideIcon, 
-  LayoutDashboard, 
-  CircleDashed, 
-  MapPin, 
-  Bed 
+import {
+  LucideIcon,
+  LayoutDashboard,
+  CircleDashed,
+  MapPin,
+  Bed
 } from 'lucide-react';
 
 // MUI Imports
@@ -26,9 +26,13 @@ import {
 // Assuming these are your local components
 import Calendar from '../../../components/calendar';
 import StatCard from '../../../components/statCard';
+import { columns } from './columns';
+import { requests } from './requests';
+import { employeesData } from './employeesData';
+import { Protected } from '@/components/protected';
 
 // --- Interfaces ---
-interface Column {
+export interface Column {
   id: 'id' | 'name' | 'appiledOn' | 'date' | 'type';
   label: string;
   minWidth?: number;
@@ -44,15 +48,6 @@ interface StatItem {
   textColor: string;
 }
 
-// --- Data & Constants ---
-const columns: readonly Column[] = [
-  { id: 'id', label: 'ID', minWidth: 70 },
-  { id: 'name', label: 'Name', minWidth: 150 },
-  { id: 'appiledOn', label: 'Applied On', minWidth: 150 },
-  { id: 'date', label: 'Date', minWidth: 150 },
-  { id: 'type', label: 'Type', minWidth: 100 },
-];
-
 const attendanceStats: StatItem[] = [
   { id: 1, title: "Total Day(s)", value: "19.5", icon: LayoutDashboard, iconBgColor: "bg-green-500", textColor: "text-green-500" },
   { id: 2, title: "Half Day(s)", value: "01", icon: CircleDashed, iconBgColor: "bg-orange-500", textColor: "text-orange-500" },
@@ -60,26 +55,7 @@ const attendanceStats: StatItem[] = [
   { id: 4, title: "Leave(s)", value: "01", icon: Bed, iconBgColor: "bg-blue-500", textColor: "text-blue-500" },
 ];
 
-const requests = [
-  { id: 'EM011', name: 'Sok Dara', appiledOn: '12 Nov 2025', date: '12 Nov - 14 Nov', type: 'Leave' },
-  { id: 'EM012', name: 'Sok Dara', appiledOn: '12 Nov 2025', date: '12 Nov - 14 Nov', type: 'On Duty' },
-  { id: 'EM013', name: 'Sok Dara', appiledOn: '12 Nov 2025', date: '12 Nov - 14 Nov', type: 'Leave' },
-  { id: 'EM014', name: 'Sok Dara', appiledOn: '12 Nov 2025', date: '12 Nov - 14 Nov', type: 'Late' },
-  { id: 'EM015', name: 'Sok Dara', appiledOn: '12 Nov 2025', date: '12 Nov - 14 Nov', type: 'Leave' },
-  { id: 'EM016', name: 'Sok Dara', appiledOn: '15 Nov 2025', date: '15 Nov - 16 Nov', type: 'Leave' },
-];
-
-const employeesData = [
-  { id: 'EM011', name: 'Sok Dara', role: 'UI Designer', days: 3, In: '9:00 AM', Out: '6:00 PM' },
-  { id: 'EM012', name: 'Lang Makara', role: 'Frontend Developer', days: 2, In: '9:00 AM', Out: '6:00 PM' },
-  { id: 'EM013', name: 'Sok Dara', role: 'Backend Developer', days: 1, In: '9:00 AM', Out: '6:00 PM' },
-  { id: 'EM014', name: 'Chan Sopheak', role: 'Project Manager', days: 4, In: '9:00 AM', Out: '6:00 PM' },
-  { id: 'EM016', name: 'Meas Vanna', role: 'QA Engineer', days: 2, In: '9:00 AM', Out: '6:00 PM' },
-  { id: 'EM017', name: 'Meas Vanna', role: 'QA Engineer', days: 2, In: '9:00 AM', Out: '6:00 PM' },
-  { id: 'EM018', name: 'Meas Vanna', role: 'QA Engineer', days: 2, In: '9:00 AM', Out: '6:00 PM' },
-];
-
-export default function DashboardPage() {
+function DashboardContent() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
@@ -95,10 +71,10 @@ export default function DashboardPage() {
   return (
     <div className="p-4 bg-gray-50 min-h-screen">
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-        
+
         {/* --- LEFT SECTION (2 Cols) --- */}
         <div className="lg:col-span-3 space-y-4">
-          
+
           {/* Stats Cards Wrapper */}
           <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-row items-center justify-start overflow-x-auto gap-2">
             {attendanceStats.map((stat, index) => (
@@ -120,7 +96,7 @@ export default function DashboardPage() {
               <h2 className="font-bold text-gray-800 text-lg">Recent Request</h2>
               <button className="text-blue-500 text-sm font-semibold hover:underline">View All</button>
             </div>
-            
+
             <TableContainer sx={{ height: 250, overflowY: 'auto' }}>
               <Table stickyHeader aria-label="recent requests table">
                 <TableHead>
@@ -129,17 +105,17 @@ export default function DashboardPage() {
                       <TableCell
                         key={column.id}
                         align={column.align}
-                        sx={{ 
-                          minWidth: column.minWidth, 
-                          fontWeight: 'bold', 
-                          backgroundColor: '#f8fafc', 
+                        sx={{
+                          minWidth: column.minWidth,
+                          fontWeight: 'bold',
+                          backgroundColor: '#f8fafc',
                           color: '#475569',
                           borderBottom: '2px solid #e2e8f0'
                         }}
                       >
                         {column.label}
                       </TableCell>
-                      
+
                     ))}
                   </TableRow>
                 </TableHead>
@@ -153,9 +129,8 @@ export default function DashboardPage() {
                         <TableCell className="text-gray-500">{row.appiledOn}</TableCell>
                         <TableCell className="text-gray-500">{row.date}</TableCell>
                         <TableCell>
-                          <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                            row.type === 'Leave' ? 'bg-orange-100 text-orange-600' : 'bg-blue-100 text-blue-600'
-                          }`}>
+                          <span className={`px-3 py-1 rounded-full text-xs font-bold ${row.type === 'Leave' ? 'bg-orange-100 text-orange-600' : 'bg-blue-100 text-blue-600'
+                            }`}>
                             {row.type}
                           </span>
                         </TableCell>
@@ -251,5 +226,13 @@ export default function DashboardPage() {
         </Paper>
       </div>
     </div>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <Protected>
+      <DashboardContent />
+    </Protected>
   );
 }

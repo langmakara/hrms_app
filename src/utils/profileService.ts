@@ -1,4 +1,4 @@
-import api from './api';
+import { apiClient } from '@/lib/api-client';
 import { UserFormData } from '../components/Forms/userForm';
 
 // Get current user ID from localStorage
@@ -23,7 +23,7 @@ export const fetchCurrentUserProfile = async (): Promise<UserFormData> => {
             throw new Error('User ID not found. Please log in again.');
         }
 
-        const response = await api.get(`/employees/${userId}`);
+        const response = await apiClient.get(`/employees/${userId}`);
         return response.data;
     } catch (error) {
         console.error('Error fetching user profile:', error);
@@ -39,7 +39,7 @@ export const updateUserProfile = async (profileData: UserFormData): Promise<User
             throw new Error('User ID not found. Please log in again.');
         }
 
-        const response = await api.put(`/employees/${userId}`, profileData);
+        const response = await apiClient.put(`/employees/${userId}`, profileData);
         return response.data;
     } catch (error) {
         console.error('Error updating user profile:', error);
