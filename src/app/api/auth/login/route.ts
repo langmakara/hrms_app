@@ -2,7 +2,7 @@ import { createSession } from "@/lib/session";
 import { API_BASE } from "@/config/constants";
 import { NextRequest, NextResponse } from "next/server";
 
-const API_URL = API_BASE ? `${API_BASE.replace(/\/$/, "")}/api/auth/login` : null;
+const API_URL = API_BASE ? `${API_BASE.replace(/\/$/, "")}/auth/login` : null;
 
 export async function POST(request: NextRequest) {
   try {

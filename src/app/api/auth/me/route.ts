@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
+import { API_BASE } from '@/config/constants';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || process.env.API_BASE_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:3001' : null);
-const TARGET = API_BASE ? `${API_BASE.replace(/\/$/, '')}/api/auth/me` : null;
+const TARGET = API_BASE ? `${API_BASE.replace(/\/$/, '')}/auth/me` : null;
 
 export async function GET(request: NextRequest) {
   try {

@@ -1,20 +1,15 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// Routes that don't require authentication
 const PUBLIC_ROUTES = ['/login', '/register', '/forgot-password'];
-
-// Roles that can access protected routes (non-public, non-admin)
 const GENERAL_ACCESS_ROLES = ['HR', 'ADMIN'];
-
-// Roles that can access /admin/* routes
 const ADMIN_ONLY_ROLES = ['ADMIN'];
 
 /**
  * Decode JWT payload without verification.
  * Verification happens on the backend when the token is used.
  */
-function decodeJwtPayload(token: string): { sub?: string; email?: string; roles?: string[] } | null {
+function decodeJwtPayload(token: string): { sub?: string; email?: string; roles?: string[]; exp?: number } | null {
   try {
     const parts = token.split('.');
     if (parts.length !== 3) return null;
@@ -30,52 +25,51 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Check if current route is public
-  const isPublicRoute = PUBLIC_ROUTES.some(route => pathname.startsWith(route));
+  const isPublicRoute = PUBLIC_ROUTES.some(route => pathname === route || pathname.startsWith(route));
   const isAdminRoute = pathname.startsWith('/admin');
 
-  // 1. If no token and trying to access protected route → redirect to login
-  if (!token && !isPublicRoute) {
-    const loginUrl = new URL('/login', request.url);
-    loginUrl.searchParams.set('redirect', pathname);
-    return NextResponse.redirect(loginUrl);
-  }
-
-  // 2. If has token and trying to access login → redirect to dashboard
-  if (token && pathname.startsWith('/login')) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
-  }
-
-  // 3. Role-based protection (only for authenticated users on protected routes)
-  if (token && !isPublicRoute) {
+  // Validate token if present
+  if (token) {
     const payload = decodeJwtPayload(token);
-    const userRoles = payload?.roles || [];
 
-    if (isAdminRoute) {
-      // /admin/* routes: ADMIN only
-      const hasAdminAccess = ADMIN_ONLY_ROLES.some(role => userRoles.includes(role));
-      if (!hasAdminAccess) {
-        return NextResponse.redirect(new URL('/dashboard', request.url));
+    if (!payload || (payload.exp && Date.now() >= payload.exp * 1000)) {
+      // Invalid or expired token
+      const response = NextResponse.redirect(new URL('/login', request.url));
+      response.cookies.delete('auth_token');
+      return response;
+    }
+
+    // Redirect authenticated users away from login
+    if (pathname === '/login') {
+      return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
+
+    // Role-based access on protected routes
+    if (!isPublicRoute) {
+      const userRoles = (payload.roles || []).map((r: string) => r.toUpperCase());
+
+      if (isAdminRoute) {
+        const hasAdminAccess = ADMIN_ONLY_ROLES.some(role => userRoles.includes(role.toUpperCase()));
+        if (!hasAdminAccess) {
+          return NextResponse.redirect(new URL('/unauthorized', request.url));
+        }
+      } else {
+        const hasGeneralAccess = GENERAL_ACCESS_ROLES.some(role => userRoles.includes(role.toUpperCase()));
+        if (!hasGeneralAccess) {
+          return NextResponse.redirect(new URL('/unauthorized', request.url));
+        }
       }
-    } else {
-      // All other protected routes: HR or ADMIN
-      const hasGeneralAccess = GENERAL_ACCESS_ROLES.some(role => userRoles.includes(role));
-      if (!hasGeneralAccess) {
-        return NextResponse.redirect(new URL('/login', request.url));
-      }
+    }
+  } else {
+    // No token - redirect to login for protected routes
+    if (!isPublicRoute) {
+      const loginUrl = new URL('/login', request.url);
+      loginUrl.searchParams.set('redirect', pathname);
+      return NextResponse.redirect(loginUrl);
     }
   }
 
-  // 4. Clone request headers and add Authorization for API routes
-  const requestHeaders = new Headers(request.headers);
-  if (token) {
-    requestHeaders.set('Authorization', `Bearer ${token}`);
-  }
-
-  return NextResponse.next({
-    request: {
-      headers: requestHeaders,
-    },
-  });
+  return NextResponse.next();
 }
 
 // Configure which routes the middleware runs on

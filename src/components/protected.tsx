@@ -1,8 +1,8 @@
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { ReactNode, useEffect } from 'react';
-import { useUser } from '@/services/auth/get-auth-user';
 import Loading from './loading';
 import { Box } from '@mui/material';
+import { useAuthUser } from '@/services/auth/auth-service';
 
 export type ProtectedProps = {
   children: ReactNode;
@@ -12,16 +12,15 @@ export const Protected = ({
   children,
 }: ProtectedProps) => {
   const router = useRouter();
-  const pathname = usePathname();
-  const user = useUser();
+  const { data, isLoading, error } = useAuthUser();
 
   useEffect(() => {
-    if (!user.data && !user.isLoading) {
+    if (!isLoading && (!data || error)) {
       router.replace('/login');
     }
-  }, [user.data, user.isLoading, router]);
+  }, [data, isLoading, error, router]);
 
-  if (user.isLoading) {
+  if (isLoading) {
     return (
       <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2, height: "full" }}>
         <Loading />
@@ -29,7 +28,5 @@ export const Protected = ({
     );
   }
 
-  if (!user.data && !user.isLoading) return null;
-
-  return <>{children}</>;
+  return children;
 };
