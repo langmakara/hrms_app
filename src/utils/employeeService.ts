@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import api from '../utils/axios';
-// ឆែកមើល Path ឱ្យត្រូវទៅកាន់ឯកសារដែលអ្នកទើបបង្កើតក្នុង Frontend
+
+import api from './api';
 import { EmployeeDto, CreateEmployeeDto, UpdateEmployeeDto } from '../dtos/employee';
 
 export const fetchEmployees = async (): Promise<EmployeeDto[]> => {

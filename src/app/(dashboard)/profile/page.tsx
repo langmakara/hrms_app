@@ -7,7 +7,7 @@ import UserForm, { UserFormData } from '../../../components/Forms/userForm';
 import Profile from "../../../assets/profile.png";
 import * as React from 'react';
 
-// ១. កែសម្រួល initialData ឱ្យត្រូវតាម Interface
+
 const initialData: UserFormData = {
     name: "Lang Makara",
     id: "EM001",
@@ -32,10 +32,10 @@ const managersList = [
 ];
 
 export default function ProfilePage() {
-    // ២. បង្កើត State សម្រាប់គ្រប់គ្រងទិន្នន័យ Profile ដែលបង្ហាញលើ Screen
+    // បង្កើត State សម្រាប់គ្រប់គ្រងទិន្នន័យ Profile ដែលបង្ហាញលើ Screen
     const [userData, setUserData] = useState<UserFormData>(initialData);
 
-    // ៣. បង្កើត State សម្រាប់ Modal
+    // បង្កើត State សម្រាប់ Modal
     const [modal, setModal] = useState<{
         open: boolean;
         mode: 'add' | 'edit' | 'profile';
@@ -134,7 +134,7 @@ export default function ProfilePage() {
                     initialData={modal.data}
                     managers={managersList}
                     onClose={handleCloseModal}
-                    onSubmit={handleSubmit}
+                    onSubmit={(data: Record<string, unknown>) => handleSubmit(data as unknown as UserFormData)}
                 />
             </UniversalModal>
         </div>

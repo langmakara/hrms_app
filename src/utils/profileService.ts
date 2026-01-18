@@ -1,4 +1,4 @@
-import api from './axios';
+import api from './api';
 import { UserFormData } from '../components/Forms/userForm';
 
 // Get current user ID from localStorage

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Mail, Eye, EyeOff } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import api from '@/utils/axios';
+import api from '@/utils/api';
 
 export default function LoginPage() {
   const router = useRouter();
