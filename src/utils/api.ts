@@ -1,46 +1,52 @@
-import axios from 'axios';
+import axios from "axios";
+
+// Client API base: prefer NEXT_PUBLIC_API_BASE_URL, otherwise in dev default to localhost:3001,
+// in production fall back to empty string so requests are relative to the current origin (Next.js API routes).
+const envPublicBase = process.env.NEXT_PUBLIC_API_BASE_URL;
+const API_BASE_FALLBACK = process.env.NODE_ENV === 'development' ? 'http://localhost:3001' : '';
+const API_URL = envPublicBase ? envPublicBase.replace(/\/$/, '') : API_BASE_FALLBACK;
 
 const api = axios.create({
-  baseURL: 'http://localhost:3001/api',
-  timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+	baseURL: API_URL,
+	headers: {
+		"Content-Type": "application/json",
+	},
+	withCredentials: true,
 });
 
-// Add request interceptor to include authentication token
-api.interceptors.request.use(
-  (config) => {
-    // Get token from cookies
-    const token = document.cookie
-      .split('; ')
-      .find(row => row.startsWith('access_token='))
-      ?.split('=')[1];
+// api.interceptors.request.use(
+// 	(config) => {
+// 		const token = localStorage.getItem("token"); // Or use cookies
+// 		if (token) {
+// 			config.headers.Authorization = `Bearer ${token}`;
+// 		}
+// 		return config;
+// 	},
+// 	(error) => {
+// 		return Promise.reject(error);
+// 	}
+// );
 
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
-// Add response interceptor for error handling
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    // Handle 401 Unauthorized errors
-    if (error.response?.status === 401) {
-      // Token might be expired or invalid
-      console.error('Authentication failed. Please login again.');
-      // Optionally redirect to login page
-      // window.location.href = '/login';
-    }
-    return Promise.reject(error);
-  }
-);
+// api.interceptors.response.use(
+// 	(response) => response,
+// 	(error) => {
+// 		if (error.response?.status === 401) {
+// 			window.location.href = "/login";
+// 		} else if (error.response?.status === 422) {
+// 			const errors = error.response.data.errors;
+// 			if (errors) {
+// 				for (const errorKey in errors) {
+// 					if (Object.hasOwnProperty.call(errors, errorKey)) {
+// 						console.error(`${errorKey}: ${errors[errorKey]}`);
+// 						// You can also display these errors to the user in a more user - friendly way,
+// 						// such as setting them in a state variable for a React component
+// 						// or showing a toast message.
+// 					}
+// 				}
+// 			}
+// 		}
+// 		return Promise.reject(error);
+// 	}
+// );
 
 export default api;

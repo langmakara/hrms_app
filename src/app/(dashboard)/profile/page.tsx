@@ -134,7 +134,7 @@ export default function ProfilePage() {
                     initialData={modal.data}
                     managers={managersList}
                     onClose={handleCloseModal}
-                    onSubmit={(data: Record<string, unknown>) => handleSubmit(data as unknown as UserFormData)}
+                    onSubmit={(data: UserFormData) => handleSubmit(data)}
                 />
             </UniversalModal>
         </div>

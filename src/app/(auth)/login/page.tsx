@@ -8,9 +8,8 @@ import api from '@/utils/api';
 export default function LoginPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [successMsg, setSuccessMsg] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -29,93 +28,108 @@ export default function LoginPage() {
     }
   };
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setSuccessMsg("");
-    setIsLoading(true);
-    console.log("email:", email, "password:", password)
+  // Client-side validation
+  const validateForm = () => {
+    const newErrors: { [key: string]: string } = {}
+    if (!formData.email) {
+      newErrors.email = "Email or phone is required"
+    } else if (formData.email.includes("@") && !/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address"
+    }
+
+    if (!formData.password) {
+      newErrors.password = "Password is required"
+    } else if (formData.password.length < 8) {
+      // require minimum 8 characters
+      newErrors.password = "Password must be at least 8 characters"
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+    setErrors({})
+
+    if (!validateForm()) {
+      setIsLoading(false)
+      return
+    }
 
     try {
-      const response = await api.post('/auth/login', { email, password });
-      console.log(response.data);
+      const email = formData.email
+      const password = formData.password
+      // Call the Next.js API proxy on the same origin to avoid CORS issues.
+      // The proxy route will forward requests to your backend (configured server-side).
+      const proxyResp = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      })
 
-      // Handle response - backend returns { access_token: "..." }
-      const access_token = response.data?.access_token || response.data?.data?.access_token;
+      const responseData = await proxyResp.json()
+      const access_token = responseData?.access_token || responseData?.data?.access_token
 
       if (access_token) {
-        // Decode JWT to extract user payload (sub, email, roles)
-        const payload = decodeJWT(access_token);
-        console.log("Decoded JWT payload:", payload);
+        const payload = decodeJWT(access_token)
 
-        // Store token in cookie for axios interceptor
-        document.cookie = `access_token=${access_token}; path=/; max-age=86400`; // 24 hours
-        document.cookie = "isLoggedIn=true; path=/";
-        localStorage.setItem("access_token", access_token);
+        document.cookie = `access_token=${access_token}; path=/; max-age=86400`
+        document.cookie = "isLoggedIn=true; path=/"
+        localStorage.setItem("access_token", access_token)
 
-        // Store user information from JWT payload
         if (payload) {
           const userInfo = {
             id: payload.sub,
             email: payload.email,
             roles: payload.roles || [],
-          };
+          }
 
-          localStorage.setItem("user", JSON.stringify(userInfo));
-          localStorage.setItem("userRoles", JSON.stringify(payload.roles || []));
+          localStorage.setItem("user", JSON.stringify(userInfo))
+          localStorage.setItem("userRoles", JSON.stringify(payload.roles || []))
 
-          // For backward compatibility, store primary role
           const primaryRole = Array.isArray(payload.roles) && payload.roles.length > 0
             ? payload.roles[0]
-            : "user";
-          localStorage.setItem("userRole", primaryRole);
+            : "user"
+          localStorage.setItem("userRole", primaryRole)
         }
 
-        setSuccessMsg("Login Successful!");
+        setSuccessMsg("Login Successful!")
 
-        // Role-based routing - redirect based on roles
         setTimeout(() => {
-          const roles = payload?.roles || [];
-
-          // Check if user has admin role
+          const roles = (decodeJWT(access_token)?.roles) || []
           if (Array.isArray(roles) && roles.includes("admin")) {
-            router.push("/admin-dashboard");
+            router.push("/admin-dashboard")
           } else {
-            router.push("/dashboard");
+            router.push("/dashboard")
           }
-        }, 2000);
+        }, 1000)
       }
     } catch (err: any) {
-      console.error("Login error:", err);
+      console.error("Login error:", err)
 
-      // Handle different error scenarios
       if (err.response) {
-        // Server responded with error status
-        const errorData = err.response?.data;
-        let errorMessage = "An error occurred. Please try again.";
-
-        // Safely extract error message as string
+        const errorData = err.response?.data
+        let errorMessage = "An error occurred. Please try again."
         if (typeof errorData === 'string') {
-          errorMessage = errorData;
+          errorMessage = errorData
         } else if (errorData && typeof errorData === 'object') {
-          errorMessage = errorData.message || errorData.error || `Server error: ${err.response.status}`;
+          errorMessage = errorData.message || errorData.error || `Server error: ${err.response.status}`
         } else {
-          errorMessage = `Server error: ${err.response.status}`;
+          errorMessage = `Server error: ${err.response.status}`
         }
 
-        // Ensure it's always a string
-        setError(String(errorMessage));
+        setErrors({ general: String(errorMessage) })
       } else if (err.request) {
-        // Request made but no response received
-        setError("Cannot connect to server. Please check if the backend is running.");
+        setErrors({ general: "Cannot connect to server. Please check if the backend is running." })
       } else {
-        // Something else happened
-        setError(err.message || "An unexpected error occurred. Please try again.");
+        setErrors({ general: err.message || "An unexpected error occurred. Please try again." })
       }
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
@@ -128,25 +142,27 @@ export default function LoginPage() {
           <p className="text-[10px] text-blue-900 font-semibold uppercase">Human Resource Management System</p>
         </div>
 
-        {successMsg && <div className="bg-green-100 text-green-700 px-4 py-2 rounded mb-4 text-sm text-center font-medium animate-pulse">{successMsg}</div>}
-        {error && <div className="bg-red-100 text-red-700 px-4 py-2 rounded mb-4 text-sm text-center">{error}</div>}
+  {successMsg && <div className="bg-green-100 text-green-700 px-4 py-2 rounded mb-4 text-sm text-center font-medium animate-pulse">{successMsg}</div>}
+  {errors.general && <div className="bg-red-100 text-red-700 px-4 py-2 rounded mb-4 text-sm text-center">{errors.general}</div>}
 
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-gray-700 mb-1 text-sm font-medium">Email</label>
             <div className="relative">
-              <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="w-full border border-gray-300 rounded-md p-2 pr-10 focus:ring-2 focus:ring-yellow-500/50 outline-none" placeholder="admin@example.com" />
+              <input type="email" required value={formData.email} onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))} className="w-full border border-gray-300 rounded-md p-2 pr-10 focus:ring-2 focus:ring-yellow-500/50 outline-none" placeholder="admin@example.com" />
               <Mail className="absolute right-3 top-2.5 text-gray-400 w-5 h-5" />
             </div>
+            {errors.email && <p className="text-xs text-red-600 mt-1">{errors.email}</p>}
           </div>
           <div>
             <label className="block text-gray-700 mb-1 text-sm font-medium">Password</label>
             <div className="relative">
-              <input type={showPassword ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)} className="w-full border border-gray-300 rounded-md p-2 pr-10 focus:ring-2 focus:ring-yellow-500/50 outline-none" placeholder="••••••••" />
+              <input type={showPassword ? "text" : "password"} required value={formData.password} onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))} className="w-full border border-gray-300 rounded-md p-2 pr-10 focus:ring-2 focus:ring-yellow-500/50 outline-none" placeholder="••••••••" />
               <div className="absolute right-3 top-2.5 cursor-pointer text-gray-400" onClick={() => setShowPassword(!showPassword)}>
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </div>
             </div>
+            {errors.password && <p className="text-xs text-red-600 mt-1">{errors.password}</p>}
           </div>
           <div className="flex justify-between text-xs text-gray-600">
             <button type="button" className="hover:underline">Forget password?</button>

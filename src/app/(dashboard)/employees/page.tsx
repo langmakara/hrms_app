@@ -15,7 +15,7 @@ import UniversalModal from '../../../components/UniversalModal';
 import UserForm from '../../../components/Forms/userForm';
 
 // Import Services និង Types
-import { fetchEmployees, createEmployee, updateEmployee, deleteEmployee } from '../../../service/employeeService';
+import { fetchEmployees, createEmployee, updateEmployee, deleteEmployee } from '@/utils/employeeService';
 import { EmployeeDto } from '../../../dtos/employee';
 
 interface Column {

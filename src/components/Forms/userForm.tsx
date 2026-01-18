@@ -9,7 +9,7 @@ export type UserFormData = EmployeeDto;
 
 interface UserFormProps {
   initialData?: EmployeeDto; // ទិន្នន័យចាស់សម្រាប់ Edit
-  onSubmit: (data: Record<string, unknown>) => void; // Function ផ្ញើទៅកាន់ API Service
+  onSubmit: (data: UserFormData) => void; // Function ផ្ញើទៅកាន់ API Service
   onClose: () => void;
   managers: { id: string; name: string }[];
   mode: 'add' | 'edit' | 'profile';
@@ -75,15 +75,16 @@ const UserForm: React.FC<UserFormProps> = ({ initialData, onSubmit, onClose, man
       return;
     }
 
-    // Send cleaned data to parent (remove empty string fields)
-    const cleaned: Record<string, unknown> = {};
+  // Send cleaned data to parent (remove empty string fields)
+  const cleaned: Record<string, unknown> = {};
     Object.keys(formData).forEach((k) => {
       const v = (formData as Record<string, unknown>)[k];
       if (v !== undefined && v !== null && !(typeof v === 'string' && (v as string).trim() === '')) cleaned[k] = v;
     });
 
-    // បញ្ជូន formData ទៅកាន់ Parent Component ដើម្បីហៅ Service
-    onSubmit(cleaned);
+  // បញ្ជូន formData ទៅកាន់ Parent Component ដើម្បីហៅ Service
+  // Cast to UserFormData (we've validated required fields above)
+  onSubmit(cleaned as unknown as UserFormData);
   };
 
   return (

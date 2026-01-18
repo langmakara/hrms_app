@@ -4,19 +4,16 @@ import { EmployeeDto, CreateEmployeeDto, UpdateEmployeeDto } from '../dtos/emplo
 
 export const fetchEmployees = async (): Promise<EmployeeDto[]> => {
     try {
-        const response = await api.get<any>('/employees');
-        // Handle various possible response shapes from the API.
-        const res = response.data;
-        if (Array.isArray(res)) return res;
-        if (Array.isArray(res?.data)) return res.data;
-        if (Array.isArray(res?.employees)) return res.employees;
-        if (Array.isArray(res?.result)) return res.result;
-
-        // If the API wrapped data under nested objects (e.g., { data: { employees: [...] }})
-        if (Array.isArray(res?.data?.employees)) return res.data.employees;
-
-        // No array found — log the response so we can debug missing employees
-        console.debug('[employeeService] fetchEmployees unexpected response shape', { responseData: res });
+        // Use same-origin Next.js proxy endpoint to avoid CORS from the browser
+        const resp = await fetch('/api/employees', { method: 'GET', credentials: 'same-origin' });
+        const data = await resp.json();
+        // Normalize several possible shapes
+        if (Array.isArray(data)) return data as EmployeeDto[];
+        if (Array.isArray(data?.data)) return data.data as EmployeeDto[];
+        if (Array.isArray(data?.employees)) return data.employees as EmployeeDto[];
+        if (Array.isArray(data?.result)) return data.result as EmployeeDto[];
+        if (Array.isArray(data?.data?.employees)) return data.data.employees as EmployeeDto[];
+        console.debug('[employeeService] fetchEmployees unexpected response shape', { responseData: data });
         return [];
     } catch (error) {
         console.error('Error fetching employees:', error);

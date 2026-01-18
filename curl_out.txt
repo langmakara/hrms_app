@@ -1,0 +1,1 @@
+{"statusCode":400,"timestamp":"2026-01-18T06:10:52.922Z","path":"/api/auth/login","message":{"message":"Expected property name or '}' in JSON at position 1","error":"Bad Request","statusCode":400}}
